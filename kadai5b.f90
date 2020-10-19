@@ -67,14 +67,12 @@ contains
     ! work
     integer (kindi) :: j,n
     ! --- start --- !
-    do j = -jmax, jmax
-       x(j) = real(j,kind=kindr) / real(jmax,kind=kindr)
-    end do
     do n = 0, nmax
        time(n) = dt*n
     end do
-    ! initial condition
     do j = -jmax, jmax
+       x(j) = real(j,kind=kindr) / real(jmax,kind=kindr)
+       ! initial condition
        temperature(j,0) = exp(-1.0_kindr*x(j)**2 / (2.0_kindr*sigma**2))
     end do
   end subroutine init
