@@ -99,7 +99,7 @@ contains
   subroutine inverse(A, dimA)
     implicit none
     integer(kindi), intent(in) :: dimA
-    real(kindr), dimension(dimA,dimA), intent(out) :: A
+    real(kindr), dimension(dimA,dimA), intent(inout) :: A
     ! work
     integer(kindi) :: j,info
     integer(kindi), dimension(dimA) :: ipiv
@@ -129,6 +129,7 @@ contains
     real(kindr), dimension(dimA,dimA) :: A
     ! --- start --- !
     ! T(n) = A T(n+1)
+    A = 0.0_kindr
     diagonal = 1.0_kindr + 2.0_kindr * mu
     do j = 2, dimA-1
        A(j,j-1) = -mu
@@ -160,6 +161,7 @@ contains
     ! --- start --- !
     ! A T(n+1) = B T(n)
     ! --- A --- !
+    A = 0.0_kindr
     diagonal = 1.0_kindr + mu
     do j = 2, dimA-1
        A(j,j-1) = -halfmu
@@ -171,6 +173,7 @@ contains
     A(dimA,dimA) = A(1,1)
     A(dimA,dimA-1) = A(1,2)
     ! --- B --- !
+    B = 0.0_kindr
     diagonal = 1.0_kindr - mu
     do j = 2, dimA-1
        B(j,j-1) = halfmu
