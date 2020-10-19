@@ -28,7 +28,8 @@ program kadai5b
   ! x -1                   0                  +1
   !    *---*---*---*---*---*---*---*---*---*---*
   ! j -5  -4  -3  -2  -1   0   1   2   3   4   5
-  
+
+  ! --- start --- !
   write(*,'("   nu=",e12.6)') nu
   write(*,'("sigma=",e12.6)') sigma
   write(*,'("   dt=",e12.6)') dt
@@ -65,6 +66,7 @@ contains
     real(kindr), dimension(0:nmax), intent(inout) :: time
     ! work
     integer (kindi) :: j,n
+    ! --- start --- !
     do j = -jmax, jmax
        x(j) = real(j,kind=kindr) / real(jmax,kind=kindr)
     end do
@@ -82,6 +84,7 @@ contains
     real(kindr), dimension(-jmax:jmax,0:nmax), intent(inout) :: temperature
     ! work
     integer(kindi) :: j,n
+    ! --- start --- !
     do n = 0, nmax-1
        do j = -jmax+1, jmax-1
           temperature(j,n+1) = temperature(j,n) &
@@ -101,6 +104,7 @@ contains
     integer(kindi) :: j,info
     integer(kindi), dimension(dimA) :: ipiv
     real(kindr), dimension(dimA) :: work
+    ! --- start --- !
     ! LU decomposition
     call dgetrf(dimA, dimA, A, dimA, ipiv, info)
     if (info/=0) then
@@ -123,6 +127,7 @@ contains
     integer(kindi), parameter :: dimA=2*jmax-1
     real(kindr) :: diagonal
     real(kindr), dimension(dimA,dimA) :: A
+    ! --- start --- !
     ! T(n) = A T(n+1)
     diagonal = 1.0_kindr + 2.0_kindr * mu
     do j = 2, dimA-1
@@ -144,7 +149,7 @@ contains
     temperature(+jmax,:) = temperature(+jmax-1,:)
   end subroutine backward
   
-  subroutine cn(temperature)
+  subroutine cn(temperature) ! Crank-Nicolson scheme
     implicit none
     real(kindr), dimension(-jmax:jmax,0:nmax), intent(inout) :: temperature
     ! work
@@ -152,6 +157,7 @@ contains
     integer(kindi), parameter :: dimA=2*jmax-1
     real(kindr) :: diagonal, halfmu=mu*0.5_kindr
     real(kindr), dimension(dimA,dimA) :: A, B
+    ! --- start --- !
     ! A T(n+1) = B T(n)
     ! --- A --- !
     diagonal = 1.0_kindr + mu
@@ -194,11 +200,7 @@ contains
     real(kindr), dimension(0:nmax), intent(in) :: time
     ! work
     integer(kindi) :: j,n
-    !    ,  time1,  time2,  time3, ...
-    !  x1, temp11, temp12, temp13, ...
-    !  x2, temp21, temp22, temp23, ...
-    !  x3, temp31, temp32, temp33, ...
-    ! ...,   ... ,   ... ,   ... ,
+    ! --- start --- !
     open(10, file=outputname, action='write', form='formatted', status='replace')
     do n = 0, nmax, nint
        write(10,'(",",f5.2)',advance='no') time(n)
