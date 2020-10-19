@@ -6,16 +6,18 @@ program kadai5b
   integer(4), parameter :: kindr=8
   
   ! model settings
-  integer(kindi), parameter :: jmax=100
-  real(kindr), parameter :: dt=.01_kindr
+  integer(kindi), parameter :: jmax=10
+  real(kindr), parameter :: dt=1.0e-2_kindr
   real(kindr), parameter :: nu=1.0_kindr, sigma=0.1_kindr
   real(kindr), parameter :: time_max=0.1_kindr
   real(kindr), parameter :: time_int=0.01_kindr ! output interval
   character(len=*), parameter :: outputname='kadai5b.csv'
+  character(len=2) :: scheme
   
   ! work
   integer(kindi), parameter :: nmax=int(time_max/dt,kind=kindi)
   integer(kindi), parameter :: nint=int(time_int/dt,kind=kindi)
+  real(kindr), parameter :: dx=1.0_kindr/real(jmax,kind=kindr)
   real(kindr), parameter :: mu=nu*dt*real(jmax,kind=kindr)**2
   real(kindr), dimension(-jmax:jmax,0:nmax) :: temperature
   real(kindr), dimension(-jmax:jmax) :: x
@@ -26,16 +28,29 @@ program kadai5b
   ! x -1                   0                  +1
   !    *---*---*---*---*---*---*---*---*---*---*
   ! j -5  -4  -3  -2  -1   0   1   2   3   4   5
-
-  write(*,'("mu=",e12.6)') mu
+  
+  write(*,'("   nu=",e12.6)') nu
+  write(*,'("sigma=",e12.6)') sigma
+  write(*,'("   dt=",e12.6)') dt
+  write(*,'("   dx=",e12.6)') dx
+  write(*,'("   mu=",e12.6)') mu
 
   ! initialization
   call init(x, time, temperature)
 
   ! time integration
-  call forward(temperature)
-  !call backward(temperature)
-  !call cn(temperature)
+  write(*,'("Which scheme? (f, b, cn): ")',advance='no')
+  read(*,*) scheme
+  if (scheme=='f') then
+     call forward(temperature)
+  else if (scheme=='b') then
+     call backward(temperature)
+  else if (scheme=='cn') then
+     call cn(temperature)
+  else
+     write(*,*) 'Please answer f, b, or cn.'
+     stop
+  end if
 
   ! output
   call output(x, time, temperature)
